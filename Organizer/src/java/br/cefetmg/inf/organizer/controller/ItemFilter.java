@@ -4,13 +4,11 @@ import br.cefetmg.inf.organizer.model.domain.Item;
 import br.cefetmg.inf.organizer.model.domain.Tag;
 import br.cefetmg.inf.organizer.model.domain.User;
 import br.cefetmg.inf.organizer.model.service.IKeepItem;
-import br.cefetmg.inf.organizer.model.service.IKeepTag;
 import br.cefetmg.inf.organizer.model.service.impl.KeepItem;
-import br.cefetmg.inf.organizer.model.service.impl.KeepTag;
-import br.cefetmg.inf.util.ErrorObject;
 import br.cefetmg.inf.util.exception.PersistenceException;
+import br.cefetmg.inf.util.GsonUtil;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -19,26 +17,23 @@ public class ItemFilter implements GenericProcess {
 
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        String pageJSP = "/index.jsp";
         ArrayList<Tag> tagList = new ArrayList<>();
         ArrayList<String> typeList = new ArrayList<>();
-        ArrayList<Item> itemList;
+        ArrayList<Item> itemList = null;
         String[] tags;
         String[] types;
+        String result;
 
         //booleans to check if the filter is being used
         boolean tagFiltering = false, typeFiltering = false;
 
         //getting values from the checkboxes
-        tags = req.getParameterValues("tag");
-        types = req.getParameterValues("tipo");
+        Map<String,Object> parameterMap = (Map<String,Object>) req.getAttribute("mobile-parameters");
+        tags = (String[]) parameterMap.get("tag");
+        types = (String[]) parameterMap.get("tipo");
 
         HttpSession session = req.getSession();
         User user = (User) session.getAttribute("user");
-
-        if (user == null) {
-            return "/login.jsp";
-        }
 
         //checking if there is any tag to filter
         if (tags != null) {
@@ -72,12 +67,7 @@ public class ItemFilter implements GenericProcess {
                 itemList = keepItem.listAllItem(user);
             }
         } catch (PersistenceException ex) {
-            ErrorObject error = new ErrorObject();
-            error.setErrorName("Filtragem indevida");
-            error.setErrorDescription("Erro na filtragem de itens");
-            error.setErrorSubtext("Tente novamente mais tarde ou entre em contato conosco");
-            req.getSession().setAttribute("error", error);
-            return "/error.jsp";
+            //Exception
         }
 
         boolean concluidoExists = false;
@@ -104,32 +94,11 @@ public class ItemFilter implements GenericProcess {
                 }
             }
         } catch (NullPointerException ex) {
-            ErrorObject error = new ErrorObject();
-            error.setErrorName("Tarefa incorreta");
-            error.setErrorDescription("Erro na filtragem de tarefas concluídas");
-            error.setErrorSubtext("Tente novamente mais tarde ou entre em contato conosco");
-            req.getSession().setAttribute("error", error);
-            return "/error.jsp";
+            //Exception
         }
+        
+        result = GsonUtil.toJson(itemList);
 
-        //maybe swap this to response if using ajax
-        //or session (?)
-        // Pedro - yes eu concordo, mas depois mudamos 
-        if (itemList == null) {
-            req.setAttribute("itemList", new ArrayList());
-        } else {
-            req.setAttribute("itemList", itemList);
-        }
-
-        IKeepTag keepTag = new KeepTag();
-        List<Tag> tagListAll = keepTag.listAlltag(user);
-        if (tagListAll == null) {
-            req.getSession().setAttribute("tagList", new ArrayList());
-        } else {
-            req.getSession().setAttribute("tagList", tagListAll);
-        }
-
-        return pageJSP;
+        return result;
     }
-
 }
