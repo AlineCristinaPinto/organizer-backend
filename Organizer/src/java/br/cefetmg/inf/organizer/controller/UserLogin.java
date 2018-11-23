@@ -11,10 +11,11 @@ import br.cefetmg.inf.organizer.model.service.IKeepUser;
 import br.cefetmg.inf.organizer.model.service.impl.KeepItem;
 import br.cefetmg.inf.organizer.model.service.impl.KeepTag;
 import br.cefetmg.inf.organizer.model.service.impl.KeepUser;
-import br.cefetmg.inf.util.ErrorObject;
+import br.cefetmg.inf.util.GsonUtil;
 import br.cefetmg.inf.util.PasswordCriptography;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -24,26 +25,24 @@ public class UserLogin implements GenericProcess{
 
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        String pageJSP = "";
+        String result = "";
         List<Item> itemList;
         
-        String email = req.getParameter("email");
-        String password = PasswordCriptography.generateMd5(req.getParameter("password"));
+        String email = null;
+        String password = null;
+        
+        Map<String,Object> parameterMap = (Map<String,Object>) req.getAttribute("mobile-parameters");
+        email = (String) parameterMap.get("email");
+        password = PasswordCriptography.generateMd5((String) parameterMap.get("password"));
         
         IKeepUser keepUser = new KeepUser();
         User user = keepUser.getUserLogin(email, password);
         
         if(user == null){
-            ErrorObject error = new ErrorObject();
-            error.setErrorName("Tente novamente");
-            error.setErrorDescription("Erro no login");
-            error.setErrorSubtext("Verifique se você já está cadastrado, senão crie uma conta");
-            req.getSession().setAttribute("error", error);
-            pageJSP = "/errorLogin.jsp";
+            boolean notAnUser = false;
+            result = GsonUtil.toJson(notAnUser);
         }else{
-            HttpSession session = req.getSession();
-            session.setAttribute("user", user);
-            
+            /*
             IKeepItem keepItem = new KeepItem();
             itemList = keepItem.listAllItem(user);
             if(itemList == null){
@@ -58,11 +57,14 @@ public class UserLogin implements GenericProcess{
             }else{
                req.getSession().setAttribute("tagList", tagList);
             }
-                
-            pageJSP = "/index.jsp";
+            result = "/index.jsp";
+            */
+            
+            result = GsonUtil.toJson(user.getCodEmail());
+            
         }
         
-        return pageJSP;
+        return result;
     }
     
 }
