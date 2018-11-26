@@ -10,12 +10,14 @@ import br.cefetmg.inf.organizer.model.service.IKeepTag;
 import br.cefetmg.inf.organizer.model.service.impl.KeepItem;
 import br.cefetmg.inf.organizer.model.service.impl.KeepItemTag;
 import br.cefetmg.inf.organizer.model.service.impl.KeepTag;
+import br.cefetmg.inf.util.GsonUtil;
 import com.google.gson.Gson;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -25,23 +27,27 @@ public class CreateItem implements GenericProcess {
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
-        String pageJSP = "";
         List<Item> itemList;
-        Gson json = new Gson();
-
+        
+        String selectType = null;
+        String name = null;
+        String description = null;
+        String datItem = null;
+        
         // Pegando usuário
-        HttpSession session = req.getSession();
-        User user = (User) session.getAttribute("user");
-
+        User user = new User();
+        user.setCodEmail("1");
+        
         // Pega os dados dos inputs
-        String selectType = req.getParameter("selectType");
-        String name = req.getParameter("nameItem");
-        String description = req.getParameter("descriptionItem");
-
+        Map<String,Object> parameterMap = (Map<String,Object>) req.getAttribute("mobile-parameters");
+        selectType = (String) parameterMap.get("typeItem");
+        name = (String) parameterMap.get("nameItem");
+        description = (String) parameterMap.get("descriptionItem");
+        datItem = (String) parameterMap.get("dateItem");
+        
         // Tratamento de data
-        String datItem = req.getParameter("dateItem");
         Date dateItem;
-        if (datItem == null || datItem.equals("") || datItem.isEmpty()) {
+        if (selectType.equals("SIM")) {
             dateItem = null;
         } else {
             DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -50,7 +56,7 @@ public class CreateItem implements GenericProcess {
 
         // Pega as tags e inserem no arrayList buscando o id delas para
         // conseguir inserir no itemtag
-        String tag = req.getParameter("inputTag");
+        /*String tag = req.getParameter("inputTag");
         ArrayList<Tag> tagItem = new ArrayList();
 
         if (!tag.isEmpty()) {
@@ -71,7 +77,7 @@ public class CreateItem implements GenericProcess {
                     tagItem.add(tagOfUser);
                 }
             }
-        }
+        }*/
 
         // Instanciando item para inserir
         Item item = new Item();
@@ -92,8 +98,12 @@ public class CreateItem implements GenericProcess {
         // Inserção do item mas sem a tag        
         IKeepItem keepItem = new KeepItem();
         boolean result = keepItem.createItem(item);
+        
+        String success = GsonUtil.toJson(result);
+        
+        return success;
 
-        if (!result) {
+/*        if (!result) {
         } else {
 
             if (!tag.isEmpty()) {
@@ -158,9 +168,7 @@ public class CreateItem implements GenericProcess {
                 pageJSP = "/index.jsp";
             }
 
+        }*/
+
         }
-
-        return pageJSP;
-
-    }
 }
