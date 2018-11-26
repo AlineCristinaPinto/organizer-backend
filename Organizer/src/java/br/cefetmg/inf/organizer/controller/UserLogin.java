@@ -38,10 +38,7 @@ public class UserLogin implements GenericProcess{
         IKeepUser keepUser = new KeepUser();
         User user = keepUser.getUserLogin(email, password);
         
-        if(user == null){
-            boolean notAnUser = false;
-            result = GsonUtil.toJson(notAnUser);
-        }else{
+        
             /*
             IKeepItem keepItem = new KeepItem();
             itemList = keepItem.listAllItem(user);
@@ -60,9 +57,10 @@ public class UserLogin implements GenericProcess{
             result = "/index.jsp";
             */
             
-            result = GsonUtil.toJson(user.getCodEmail());
             
-        }
+            
+        
+        result = GsonUtil.toJson(user);
         
         return result;
     }

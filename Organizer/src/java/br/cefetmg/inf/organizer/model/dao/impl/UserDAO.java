@@ -151,7 +151,7 @@ public class UserDAO implements IUserDAO {
     public User getUserLogin(String email, String password) throws PersistenceException {
         try {
             Connection connection = ConnectionManager.getInstance().getConnection();
-            String sql = "SELECT cod_Email,nom_Usuario,txt_Senha,blb_Imagem,seq_Tema, length(blb_Imagem) tamanho FROM usuario WHERE cod_Email=? and txt_Senha=?";
+            String sql = "SELECT cod_Email,nom_Usuario,txt_Senha,blb_Imagem,seq_Tema FROM usuario WHERE cod_Email=? and txt_Senha=?";
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, email);

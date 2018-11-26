@@ -37,9 +37,9 @@ public class CreateUser implements GenericProcess {
         
         boolean success = keepUser.registerUser(user);
         
-        ArrayList response = new ArrayList();
-        response.add(success);
-        result = GsonUtil.toJson(response); 
+        //ArrayList response = new ArrayList();
+        //response.add(success);
+        result = GsonUtil.toJson(success); 
         
         return result;
     }
