@@ -7,7 +7,6 @@ import br.cefetmg.inf.organizer.model.service.IKeepItem;
 import br.cefetmg.inf.organizer.model.service.IKeepTag;
 import br.cefetmg.inf.organizer.model.service.impl.KeepItem;
 import br.cefetmg.inf.organizer.model.service.impl.KeepTag;
-import br.cefetmg.inf.util.ErrorObject;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -35,11 +34,6 @@ public class DeleteTag implements GenericProcess {
         boolean success = keepTag.deleteTag(tag);
          
         if (!success) { 
-            ErrorObject error = new ErrorObject();
-            error.setErrorName("Tente novamente");
-            error.setErrorDescription("Erro ao deletar a tag");
-            req.getSession().setAttribute("error", error);
-            pageJSP = "/error.jsp";
         } else {
             
             IKeepItem keepItem = new KeepItem();

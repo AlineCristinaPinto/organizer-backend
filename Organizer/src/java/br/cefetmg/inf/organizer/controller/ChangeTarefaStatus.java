@@ -9,7 +9,6 @@ import br.cefetmg.inf.organizer.model.service.IKeepTag;
 import br.cefetmg.inf.organizer.model.service.impl.KeepItem;
 import br.cefetmg.inf.organizer.model.service.impl.KeepItemTag;
 import br.cefetmg.inf.organizer.model.service.impl.KeepTag;
-import br.cefetmg.inf.util.ErrorObject;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -40,31 +39,13 @@ public class ChangeTarefaStatus implements GenericProcess {
         boolean result = keepItem.updateItem(item);
 
         if (!result) {
-            ErrorObject error = new ErrorObject();
-            error.setErrorName("Tente novamente");
-            error.setErrorDescription("Erro ao reativar tarefa");
-            error.setErrorSubtext("Não foi possível reativar a tarefa.");
-            req.getSession().setAttribute("error", error);
-            pageJSP = "/error.jsp";
         } else {
             IKeepTag keepTag = new KeepTag();
             Long idConclude = keepTag.searchTagByName("Concluidos", user);
             if (idConclude == null) {
-                ErrorObject error = new ErrorObject();
-                error.setErrorName("Tente novamente");
-                error.setErrorDescription("Erro ao reativar tarefa");
-                error.setErrorSubtext("Não foi possível reativar a tarefa.");
-                req.getSession().setAttribute("error", error);
-                pageJSP = "/error.jsp";
             } else {
                 Tag concludeTag = keepTag.searchTagById(idConclude);
                 if (concludeTag == null) {
-                    ErrorObject error = new ErrorObject();
-                    error.setErrorName("Tente novamente");
-                    error.setErrorDescription("Erro ao reativar tarefa");
-                    error.setErrorSubtext("Não foi possível reativar a tarefa.");
-                    req.getSession().setAttribute("error", error);
-                    pageJSP = "/error.jsp";
                 } else {
                     ArrayList<Tag> tag = new ArrayList();
                     tag.add(concludeTag);
@@ -73,12 +54,6 @@ public class ChangeTarefaStatus implements GenericProcess {
                     result = keepItemTag.deleteTagInItem(tag, idItem);
 
                     if (!result) {
-                        ErrorObject error = new ErrorObject();
-                        error.setErrorName("Tente novamente");
-                        error.setErrorDescription("Erro ao reativar tarefa");
-                        error.setErrorSubtext("Não foi possível reativar a tarefa.");
-                        req.getSession().setAttribute("error", error);
-                        pageJSP = "/error.jsp";
                     } else {
                         itemList = keepItem.listAllItem(user);
                         if (itemList == null) {

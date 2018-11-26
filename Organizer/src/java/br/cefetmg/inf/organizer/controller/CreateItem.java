@@ -10,7 +10,6 @@ import br.cefetmg.inf.organizer.model.service.IKeepTag;
 import br.cefetmg.inf.organizer.model.service.impl.KeepItem;
 import br.cefetmg.inf.organizer.model.service.impl.KeepItemTag;
 import br.cefetmg.inf.organizer.model.service.impl.KeepTag;
-import br.cefetmg.inf.util.ErrorObject;
 import com.google.gson.Gson;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -95,12 +94,6 @@ public class CreateItem implements GenericProcess {
         boolean result = keepItem.createItem(item);
 
         if (!result) {
-            ErrorObject error = new ErrorObject();
-            error.setErrorName("Tente novamente");
-            error.setErrorDescription("Item já existe");
-            error.setErrorSubtext("Não é possível inserir um item de mesmo tipo com o mesmo nome.");
-            req.getSession().setAttribute("error", error);
-            pageJSP = "/error.jsp";
         } else {
 
             if (!tag.isEmpty()) {
@@ -109,11 +102,6 @@ public class CreateItem implements GenericProcess {
                 Item itemWithId = keepItem.searchItemByName(name);
 
                 if (itemWithId == null) {
-                    ErrorObject error = new ErrorObject();
-                    error.setErrorName("Tente novamente");
-                    error.setErrorDescription("Erro Interno 505");
-                    req.getSession().setAttribute("error", error);
-                    pageJSP = "/error.jsp";
 
                 } else {
 
@@ -131,12 +119,6 @@ public class CreateItem implements GenericProcess {
                     result = keepItemTag.createTagInItem(itemTag);
 
                     if (!result) {
-                        ErrorObject error = new ErrorObject();
-                        error.setErrorName("Tente novamente");
-                        error.setErrorDescription("Erro Interno 505");
-                        error.setErrorSubtext("Não foi possível inserir as tags corretamente.");
-                        req.getSession().setAttribute("error", error);
-                        pageJSP = "/error.jsp";
                     } else {
                         itemList = keepItem.listAllItem(user);
                         if (itemList == null) {

@@ -4,7 +4,6 @@ package br.cefetmg.inf.organizer.controller;
 import br.cefetmg.inf.organizer.model.domain.User;
 import br.cefetmg.inf.organizer.model.service.IKeepUser;
 import br.cefetmg.inf.organizer.model.service.impl.KeepUser;
-import br.cefetmg.inf.util.ErrorObject;
 import br.cefetmg.inf.util.PasswordCriptography;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,12 +25,6 @@ public class DeleteUser implements GenericProcess {
             IKeepUser keepUser = new KeepUser();
             boolean success = keepUser.deleteAccount(user);
             if (!success) {
-                ErrorObject error = new ErrorObject();
-                error.setErrorName("Tente novamente");
-                error.setErrorDescription("Erro na deleção de sua conta");
-                error.setErrorSubtext("Verifique se você está logado");
-                req.getSession().setAttribute("error", error);
-                pageJSP = "/error.jsp";
             } else {
                 HttpSession session = req.getSession();
                 session.invalidate();

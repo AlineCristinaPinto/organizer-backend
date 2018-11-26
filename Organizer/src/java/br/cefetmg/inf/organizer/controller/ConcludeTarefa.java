@@ -10,7 +10,6 @@ import br.cefetmg.inf.organizer.model.service.IKeepTag;
 import br.cefetmg.inf.organizer.model.service.impl.KeepItem;
 import br.cefetmg.inf.organizer.model.service.impl.KeepItemTag;
 import br.cefetmg.inf.organizer.model.service.impl.KeepTag;
-import br.cefetmg.inf.util.ErrorObject;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -43,12 +42,6 @@ public class ConcludeTarefa implements GenericProcess {
         boolean result = keepItem.updateItem(item);
         
         if(!result){
-            ErrorObject error = new ErrorObject();
-            error.setErrorName("Tente novamente");
-            error.setErrorDescription("Erro ao concluir tarefa");
-            error.setErrorSubtext("Não foi possível concluir a tarefa.");
-            req.getSession().setAttribute("error", error);
-            pageJSP = "/error.jsp";
         } else {
             IKeepTag keepTag = new KeepTag();
             Long idConclude = keepTag.searchTagByName("Concluidos", user);
@@ -64,12 +57,6 @@ public class ConcludeTarefa implements GenericProcess {
             result = keepItemTag.createTagInItem(itemTag);
             
             if(!result){
-                ErrorObject error = new ErrorObject();
-                error.setErrorName("Tente novamente");
-                error.setErrorDescription("Erro ao concluir tarefa");
-                error.setErrorSubtext("Não foi possível concluir a tarefa.");
-                req.getSession().setAttribute("error", error);
-                pageJSP = "/error.jsp";
             } else {
                 itemList = keepItem.listAllItem(user);
                 if(itemList == null){

@@ -11,7 +11,6 @@ import br.cefetmg.inf.organizer.model.domain.User;
 import br.cefetmg.inf.organizer.model.service.IKeepItem;
 import br.cefetmg.inf.organizer.model.service.IKeepMaxData;
 import br.cefetmg.inf.organizer.model.service.impl.KeepMaxData;
-import br.cefetmg.inf.util.ErrorObject;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,12 +70,6 @@ public class UpdateMaxBD implements GenericProcess{
         if(itemSuccess && tagSuccess && itemTagSuccess){          
             pageJSP = "/index.jsp";
         }else{
-            ErrorObject error = new ErrorObject();
-            error.setErrorName("Tente novamente");
-            error.setErrorDescription("Erro na execução da tarefa do assistente Max");
-            error.setErrorSubtext("Verifique se houve um erro no pedido ao assistente Max");
-            req.getSession().setAttribute("error", error);
-            pageJSP = "/error.jsp";
         }
         
         return pageJSP;

@@ -10,7 +10,6 @@ import br.cefetmg.inf.organizer.model.service.IKeepTag;
 import br.cefetmg.inf.organizer.model.service.impl.KeepItem;
 import br.cefetmg.inf.organizer.model.service.impl.KeepItemTag;
 import br.cefetmg.inf.organizer.model.service.impl.KeepTag;
-import br.cefetmg.inf.util.ErrorObject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,12 +63,6 @@ public class UpdateItem implements GenericProcess {
                     break;
                 } else {
                 if (keepTag.searchTagByName(vetTag1.trim(), user) == null) {
-                    ErrorObject error = new ErrorObject();
-                    error.setErrorName("Tente novamente");
-                    error.setErrorDescription("Erro de Tag");
-                    error.setErrorSubtext("Erro ao buscar tags solicitadas, verifique se as tags escolhidas estão cadastradas.");
-                    req.getSession().setAttribute("error", error);
-                    pageJSP = "/errorLogin.jsp";
                 } else {
                     Tag tagOfUser = new Tag();
                     
@@ -158,24 +151,12 @@ public class UpdateItem implements GenericProcess {
         boolean result = keepItem.updateItem(item);
 
         if (!result) {
-            ErrorObject error = new ErrorObject();
-            error.setErrorName("Tente novamente");
-            error.setErrorDescription("Item já existe");
-            error.setErrorSubtext("Não é possível atualizar um item de mesmo tipo com o mesmo nome.");
-            req.getSession().setAttribute("error", error);
-            pageJSP = "/error.jsp";
         } else {
 
             if(!deleteTag.isEmpty()){
                 result = keepItemTag.deleteTagInItem(deleteTag, idItem);
                 
                 if(!result){
-                    ErrorObject error = new ErrorObject();
-                    error.setErrorName("Tente novamente");
-                    error.setErrorDescription("Erro Interno 505");
-                    error.setErrorSubtext("Não foi possível retirar as tags corretamente");
-                    req.getSession().setAttribute("error", error);
-                    pageJSP = "/error.jsp";
                 } else {
                     
                     if(!newTag.isEmpty()){
@@ -187,12 +168,6 @@ public class UpdateItem implements GenericProcess {
                         result = keepItemTag.createTagInItem(itemTag);
 
                         if(!result){
-                            ErrorObject error = new ErrorObject();
-                            error.setErrorName("Tente novamente");
-                            error.setErrorDescription("Erro interno 505");
-                            error.setErrorSubtext("Não foi possível inserir as novas tags corretamente.");
-                            req.getSession().setAttribute("error", error);
-                            pageJSP = "/error.jsp";
                         } else {
                             itemList = keepItem.listAllItem(user);
                             if(itemList == null){
@@ -222,12 +197,6 @@ public class UpdateItem implements GenericProcess {
                     result = keepItemTag.createTagInItem(itemTag);
 
                     if(!result){
-                        ErrorObject error = new ErrorObject();
-                        error.setErrorName("Tente novamente");
-                        error.setErrorDescription("Erro interno 505");
-                        error.setErrorSubtext("Não foi possível inserir as novas tags corretamente.");
-                        req.getSession().setAttribute("error", error);
-                        pageJSP = "/error.jsp";
                     } else {
                         itemList = keepItem.listAllItem(user);
                         if(itemList == null){
