@@ -5,6 +5,7 @@ import br.cefetmg.inf.organizer.model.service.IKeepUser;
 import br.cefetmg.inf.organizer.model.service.impl.KeepUser;
 import br.cefetmg.inf.util.GsonUtil;
 import br.cefetmg.inf.util.PasswordCriptography;
+import java.util.ArrayList;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,7 +36,10 @@ public class CreateUser implements GenericProcess {
         IKeepUser keepUser = new KeepUser();
         
         boolean success = keepUser.registerUser(user);
-        result = GsonUtil.toJson(success); 
+        
+        ArrayList response = new ArrayList();
+        response.add(success);
+        result = GsonUtil.toJson(response); 
         
         return result;
     }

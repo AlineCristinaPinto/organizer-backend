@@ -45,7 +45,7 @@ public class UserDAO implements IUserDAO {
     public User readUser(User user) throws PersistenceException {
         try {
             Connection connection = ConnectionManager.getInstance().getConnection();
-            String sql = "SELECT nom_Usuario,txt_Senha,blb_Imagem,seq_Tema, length(blb_Imagem) tamanho FROM usuario WHERE cod_Email=?";
+            String sql = "SELECT nom_Usuario,txt_Senha,blb_Imagem,seq_Tema FROM usuario WHERE cod_Email=?";
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, user.getCodEmail());

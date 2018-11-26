@@ -27,23 +27,21 @@ public class KeepUser implements IKeepUser {
         if(temp != null){
             return false;
         }
+
+        if((user.getCodEmail() == null || user.getCodEmail().isEmpty()) || (user.getUserPassword() == null || user.getUserPassword().isEmpty()) ||
+                (user.getUserName() == null || user.getUserName().isEmpty()) || (user.getCurrentTheme()== 0)){
+            return false;
+        }
+        boolean success = userDAO.createUser(user);
+        
         IKeepTag keepTag = new KeepTag();
         Tag concludeTag = new Tag ();
         concludeTag.setUser(user);
         concludeTag.setTagName("Concluidos");
             
-        boolean success = keepTag.createTag(concludeTag);
+        boolean successTag = keepTag.createTag(concludeTag);
         
-        if(!success){
-            return false;
-        }
-        
-        if((user.getCodEmail() == null || user.getCodEmail().isEmpty()) || (user.getUserPassword() == null || user.getUserPassword().isEmpty()) ||
-                (user.getUserName() == null || user.getUserName().isEmpty()) || (user.getCurrentTheme()== 0)){
-            return false;
-        }
-        
-        return userDAO.createUser(user);
+        return (success && successTag);
     }
 
     @Override
