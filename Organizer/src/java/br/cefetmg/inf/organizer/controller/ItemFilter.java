@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 public class ItemFilter implements GenericProcess {
 
@@ -19,7 +18,7 @@ public class ItemFilter implements GenericProcess {
     public String execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
         ArrayList<Tag> tagList = new ArrayList<>();
         ArrayList<String> typeList = new ArrayList<>();
-        ArrayList<Item> itemList = null;
+        ArrayList<Item> itemList = new ArrayList();
         String[] tags;
         String[] types;
         String result;
@@ -30,12 +29,12 @@ public class ItemFilter implements GenericProcess {
 
         //getting values from the checkboxes
         Map<String,Object> parameterMap = (Map<String,Object>) req.getAttribute("mobile-parameters");
-        tags = (String[]) parameterMap.get("tag");
-        types = (String[]) parameterMap.get("tipo");
+        tags = ((ArrayList<String>) parameterMap.get("tag")).toArray(new String[]{});
+        types = ((ArrayList<String>) parameterMap.get("type")).toArray(new String[]{});
         user.setCodEmail((String) parameterMap.get("email"));
 
         //checking if there is any tag to filter
-        if (tags != null) {
+        if (tags.length > 0) {
             tagFiltering = true;
             for (String tagName : tags) {
                 Tag tag = new Tag();
@@ -46,7 +45,7 @@ public class ItemFilter implements GenericProcess {
         }
 
         //checking if there is any type to filter
-        if (types != null) {
+        if (types.length > 0) {
             typeFiltering = true;
             for (String type : types) {
                 typeList.add(type);
