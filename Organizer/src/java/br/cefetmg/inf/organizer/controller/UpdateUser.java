@@ -20,32 +20,22 @@ public class UpdateUser implements GenericProcess {
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String result = "";
-
+        
+        String email =null;
         String name = null;
         String password = null;
         
         Map<String,Object> parameterMap = (Map<String,Object>) req.getAttribute("mobile-parameters");
+        email = (String) parameterMap.get("email");
         name = (String) parameterMap.get("name");
         password = PasswordCriptography.generateMd5((String) parameterMap.get("password"));
         
         
-        User user = (User) req.getSession().getAttribute("user");
         User tempUser = new User();
-        
-        if (name == null || name.isEmpty() ) {
-            name = user.getUserName();
-        }
-        
-        if (password == null || password.isEmpty()) {
-            password = user.getUserPassword();
-        } else {
-            password = PasswordCriptography.generateMd5(password);
-        }
-
-        tempUser.setCodEmail(user.getCodEmail());
+        tempUser.setCodEmail(email);
         tempUser.setUserName(name);
         tempUser.setUserPassword(password);
-        tempUser.setCurrentTheme(user.getCurrentTheme());
+        tempUser.setCurrentTheme(1);
 
         IKeepUser keepUser = new KeepUser();
         boolean success = keepUser.updateUser(tempUser);

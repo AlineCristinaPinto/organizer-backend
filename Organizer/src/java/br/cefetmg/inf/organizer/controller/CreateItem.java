@@ -34,9 +34,7 @@ public class CreateItem implements GenericProcess {
         String description = null;
         String datItem = null;
         
-        // Pegando usuário
         User user = new User();
-        user.setCodEmail("1");
         
         // Pega os dados dos inputs
         Map<String,Object> parameterMap = (Map<String,Object>) req.getAttribute("mobile-parameters");
