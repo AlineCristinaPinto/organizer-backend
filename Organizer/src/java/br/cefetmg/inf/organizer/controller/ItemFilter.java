@@ -23,6 +23,7 @@ public class ItemFilter implements GenericProcess {
         String[] tags;
         String[] types;
         String result;
+        User user = new User();
 
         //booleans to check if the filter is being used
         boolean tagFiltering = false, typeFiltering = false;
@@ -31,9 +32,7 @@ public class ItemFilter implements GenericProcess {
         Map<String,Object> parameterMap = (Map<String,Object>) req.getAttribute("mobile-parameters");
         tags = (String[]) parameterMap.get("tag");
         types = (String[]) parameterMap.get("tipo");
-
-        HttpSession session = req.getSession();
-        User user = (User) session.getAttribute("user");
+        user.setCodEmail((String) parameterMap.get("email"));
 
         //checking if there is any tag to filter
         if (tags != null) {
