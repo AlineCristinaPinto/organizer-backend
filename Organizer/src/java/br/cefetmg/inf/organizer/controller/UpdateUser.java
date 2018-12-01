@@ -28,7 +28,12 @@ public class UpdateUser implements GenericProcess {
         Map<String,Object> parameterMap = (Map<String,Object>) req.getAttribute("mobile-parameters");
         email = (String) parameterMap.get("email");
         name = (String) parameterMap.get("name");
-        password = PasswordCriptography.generateMd5((String) parameterMap.get("password"));
+        password = (String) parameterMap.get("password");
+        boolean isHashed = (boolean) parameterMap.get("isHash");
+        
+        if(!isHashed){
+            password = PasswordCriptography.generateMd5(password);
+        }
         
         
         User tempUser = new User();

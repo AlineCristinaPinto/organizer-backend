@@ -33,6 +33,7 @@ public class CreateItem implements GenericProcess {
         String name = null;
         String description = null;
         String datItem = null;
+        String email = null;
         
         User user = new User();
         
@@ -42,7 +43,9 @@ public class CreateItem implements GenericProcess {
         name = (String) parameterMap.get("nameItem");
         description = (String) parameterMap.get("descriptionItem");
         datItem = (String) parameterMap.get("dateItem");
+        email = (String) parameterMap.get("codEmail");
         
+        user.setCodEmail(email);
         // Tratamento de data
         Date dateItem;
         if (selectType.equals("SIM")) {

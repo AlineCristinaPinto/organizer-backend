@@ -3,9 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/aline/Desktop/organizer-backend/Organizer/src/java/br/cefetmg/inf/organizer/controller/CreateItem.java</file>
-            <file>file:/home/aline/Desktop/organizer-backend/Organizer/src/java/br/cefetmg/inf/organizer/controller/LoadTagsToCreateItem.java</file>
-            <file>file:/home/aline/Desktop/organizer-backend/Organizer/src/java/br/cefetmg/inf/organizer/model/domain/Tag.java</file>
+            <file>file:/C:/Users/duduf/OneDrive/Área%20de%20Trabalho/TCC/Repositórios/organizer-backend/Organizer/src/java/br/cefetmg/inf/organizer/controller/DeleteUser.java</file>
+            <file>file:/C:/Users/duduf/OneDrive/Área%20de%20Trabalho/TCC/Repositórios/organizer-backend/Organizer/src/java/br/cefetmg/inf/organizer/controller/CreateUser.java</file>
+            <file>file:/C:/Users/duduf/OneDrive/Área%20de%20Trabalho/TCC/Repositórios/organizer-backend/Organizer/src/java/br/cefetmg/inf/organizer/controller/ServletController.java</file>
+            <file>file:/C:/Users/duduf/OneDrive/Área%20de%20Trabalho/TCC/Repositórios/organizer-backend/Organizer/src/java/br/cefetmg/inf/organizer/controller/UpdateUser.java</file>
         </group>
     </open-files>
 </project-private>
