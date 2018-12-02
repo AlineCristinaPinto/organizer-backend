@@ -37,29 +37,7 @@ public class UserLogin implements GenericProcess{
         
         IKeepUser keepUser = new KeepUser();
         User user = keepUser.getUserLogin(email, password);
-        
-        
-            /*
-            IKeepItem keepItem = new KeepItem();
-            itemList = keepItem.listAllItem(user);
-            if(itemList == null){
-                req.setAttribute("itemList", new ArrayList());
-            }else{
-                req.setAttribute("itemList", itemList);
-            }
-            IKeepTag keepTag = new KeepTag();
-            List<Tag> tagList = keepTag.listAlltag(user);
-            if(tagList == null){
-                req.getSession().setAttribute("tagList", new ArrayList());
-            }else{
-               req.getSession().setAttribute("tagList", tagList);
-            }
-            result = "/index.jsp";
-            */
-            
-            
-            
-        
+
         result = GsonUtil.toJson(user);
         
         return result;

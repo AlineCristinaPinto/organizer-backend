@@ -45,20 +45,6 @@ public class UpdateUser implements GenericProcess {
         IKeepUser keepUser = new KeepUser();
         boolean success = keepUser.updateUser(tempUser);
         
-        if (success){
-            /*
-            req.getSession().setAttribute("user",tempUser);
-            
-            IKeepTag keepTag = new KeepTag();
-            List<Tag> tagList = keepTag.listAlltag(user);
-            if (tagList == null) {
-                req.getSession().setAttribute("tagList", new ArrayList());
-            } else {
-                req.getSession().setAttribute("tagList", tagList);
-            }
-            */
-        }
-        
         result = GsonUtil.toJson(success);
         return result;
     }
