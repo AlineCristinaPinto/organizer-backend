@@ -10,11 +10,13 @@ import br.cefetmg.inf.organizer.model.service.IKeepTag;
 import br.cefetmg.inf.organizer.model.service.impl.KeepItem;
 import br.cefetmg.inf.organizer.model.service.impl.KeepItemTag;
 import br.cefetmg.inf.organizer.model.service.impl.KeepTag;
+import br.cefetmg.inf.util.GsonUtil;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -24,211 +26,60 @@ public class UpdateItem implements GenericProcess {
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
-        String pageJSP = "";
-        List<Item> itemList;
-
-        // Pegando usuário
-        HttpSession session = req.getSession();
-        User user = (User) session.getAttribute("user");
+        String selectType = null;
+        Long id = null;
+        String name = null;
+        String description = null;
+        String datItem = null;
+        String email = null;
+        
+        User user = new User();
 
         // Pega os dados dos inputs
-        String id = req.getParameter("getIdItem");
-        Long idItem = Long.parseLong(id);
-        String name = req.getParameter("nameItem");
-        String description = req.getParameter("descriptionItem");
-        String identifierItem = req.getParameter("getIdentifierItem");
-
-        // Tratamento de data
-        String datItem = req.getParameter("dateItem");
+        Map<String,Object> parameterMap = (Map<String,Object>) req.getAttribute("mobile-parameters");
+        selectType = (String) parameterMap.get("typeItem");
+        id = (Long) parameterMap.get("seqItem");
+        name = (String) parameterMap.get("nameItem");
+        description = (String) parameterMap.get("descriptionItem");
+        datItem = (String) parameterMap.get("dateItem");
+        email = (String) parameterMap.get("codEmail");
+        
+        
+        user.setCodEmail(email);
+        
         Date dateItem;
-        if (datItem == null || datItem.equals("") || datItem.isEmpty()) {
+        if (selectType.equals("SIM")) {
             dateItem = null;
         } else {
             DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             dateItem = formatter.parse(datItem);
         }
 
-        // Tratamento de Tag
-        String tag = req.getParameter("inputTag");
-
-        ArrayList<Tag> tagItem = new ArrayList();
-
-        if(!tag.isEmpty()){
-            String[] vetTag = tag.split(";");
-            
-            IKeepTag keepTag = new KeepTag();
-
-            for (String vetTag1 : vetTag) {
-                if(vetTag1.equals(" ")){
-                    break;
-                } else {
-                if (keepTag.searchTagByName(vetTag1.trim(), user) == null) {
-                } else {
-                    Tag tagOfUser = new Tag();
-                    
-                    tagOfUser.setSeqTag(keepTag.searchTagByName(vetTag1.trim(), user));
-                    tagOfUser.setTagName(vetTag1.trim());
-                    tagOfUser.setUser(user);
-
-                    tagItem.add(tagOfUser);
-                }
-                }
-            }
-        }
-        
-        IKeepItemTag keepItemTag = new KeepItemTag();
-        ArrayList<Tag> oldTags;
-        
-        // Pega as tags adicionadas anteriormente a atualização
-        oldTags = keepItemTag.listAllTagInItem(idItem);        
-        
-        ArrayList<Tag> keepTag = new ArrayList();
-        ArrayList<Tag> deleteTag = new ArrayList();
-        ArrayList<Tag> newTag = new ArrayList();
-        
-        if(oldTags == null && !tagItem.isEmpty()){
-            
-            newTag = tagItem;
-        
-        } else if (oldTags != null && tagItem.isEmpty()){
-        
-            deleteTag = oldTags;
-        
-        } else if (oldTags != null && !tagItem.isEmpty()){      
-            
-            // Adiciona as tags antigas que permanecem em keepTag
-            for(int i=0;i<tagItem.size();i++){
-                for(int j=0;j<oldTags.size();j++){
-                    if(tagItem.get(i).getTagName().contains(oldTags.get(j).getTagName())){
-                        keepTag.add(tagItem.get(i));
-                        break;
-                    }
-                }
-            }
-            
-            // Adiciona as novas tags em newTag
-            for(int i=0;i<tagItem.size();i++){
-                for(int j=0;j<oldTags.size();j++){
-                    if(!tagItem.get(i).getTagName().contains(oldTags.get(j).getTagName())){
-                        newTag.add(tagItem.get(i));
-                        break;
-                    }
-                }
-            }
-            
-            if(keepTag.isEmpty()){
-        
-                deleteTag = oldTags;
-            
-            } else {
-
-                // Adiciona as tags que não existem mais apos a atualização em deleteTag
-                for(int i=0;i<oldTags.size();i++){
-                    for(int j=0;j<keepTag.size();j++){
-                        if(!(keepTag.get(j).getTagName().contains(oldTags.get(i).getTagName()))){
-                            deleteTag.add(oldTags.get(i));
-                            break;
-                        }
-                    }
-                }
-            }
-        
-        }
-        // Instanciando item para update
+        // Instanciando item para inserir
         Item item = new Item();
 
-        item.setSeqItem(idItem);
+        item.setSeqItem(id);
         item.setNameItem(name);
         item.setDescriptionItem(description);
+        item.setIdentifierItem(selectType);
         item.setDateItem(dateItem);
-        item.setIdentifierItem(identifierItem);
-        if (identifierItem.equals("TAR")) {
-            item.setIdentifierStatus("A");
-        }
         item.setUser(user);
 
-        IKeepItem keepItem = new KeepItem();
-        boolean result = keepItem.updateItem(item);
-
-        if (!result) {
+        // se o item for uma tarefa o status não pode ser null
+        if (selectType.equals("TAR")) {
+            item.setIdentifierStatus("A");
         } else {
-
-            if(!deleteTag.isEmpty()){
-                result = keepItemTag.deleteTagInItem(deleteTag, idItem);
-                
-                if(!result){
-                } else {
-                    
-                    if(!newTag.isEmpty()){
-                        // Adiciona as novas tags
-                        ItemTag itemTag = new ItemTag();
-                        itemTag.setItem(item);
-                        itemTag.setListTags(newTag);
-
-                        result = keepItemTag.createTagInItem(itemTag);
-
-                        if(!result){
-                        } else {
-                            itemList = keepItem.listAllItem(user);
-                            if(itemList == null){
-                                req.setAttribute("itemList", new ArrayList());
-                            }else{
-                                req.setAttribute("itemList", itemList);
-                            }
-                            pageJSP = "/index.jsp";
-                        }
-                    } else {
-                        itemList = keepItem.listAllItem(user);
-                        if (itemList == null) {
-                            req.setAttribute("itemList", new ArrayList());
-                        } else {
-                            req.setAttribute("itemList", itemList);
-                        }
-                        pageJSP = "/index.jsp";
-                    }
-                }
-            } else {
-                if(!newTag.isEmpty()){
-                    // Adiciona as novas tags
-                    ItemTag itemTag = new ItemTag();
-                    itemTag.setItem(item);
-                    itemTag.setListTags(newTag);
-
-                    result = keepItemTag.createTagInItem(itemTag);
-
-                    if(!result){
-                    } else {
-                        itemList = keepItem.listAllItem(user);
-                        if(itemList == null){
-                            req.setAttribute("itemList", new ArrayList());
-                        }else{
-                            req.setAttribute("itemList", itemList);
-                        }
-                        pageJSP = "/index.jsp";
-                    }
-                } else {
-            itemList = keepItem.listAllItem(user);
-            if (itemList == null) {
-                req.setAttribute("itemList", new ArrayList());
-            } else {
-                req.setAttribute("itemList", itemList);
-            }
-
-            IKeepTag keepTags = new KeepTag();
-            List<Tag> tagList = keepTags.listAlltag(user);
-            if (tagList == null) {
-               req.getSession().setAttribute("tagList", new ArrayList());
-            } else {
-                req.getSession().setAttribute("tagList", tagList);
-            }
-
-            pageJSP = "/index.jsp";
-            }
-        }             
-
+            item.setIdentifierStatus(null);
         }
 
-        return pageJSP;
+        // Inserção do item mas sem a tag        
+        IKeepItem keepItem = new KeepItem();
+        boolean result = keepItem.updateItem(item);
+        
+        String success = GsonUtil.toJson(result);
+        
+        return success;
+
     }
 
 }

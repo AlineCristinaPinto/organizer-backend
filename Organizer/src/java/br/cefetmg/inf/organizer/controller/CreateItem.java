@@ -26,8 +26,6 @@ public class CreateItem implements GenericProcess {
 
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
-
-        List<Item> itemList;
         
         String selectType = null;
         String name = null;
@@ -55,31 +53,6 @@ public class CreateItem implements GenericProcess {
             dateItem = formatter.parse(datItem);
         }
 
-        // Pega as tags e inserem no arrayList buscando o id delas para
-        // conseguir inserir no itemtag
-        /*String tag = req.getParameter("inputTag");
-        ArrayList<Tag> tagItem = new ArrayList();
-
-        if (!tag.isEmpty()) {
-            String[] vetTag = tag.split(";");
-
-            IKeepTag keepTag = new KeepTag();
-
-            for (String vetTag1 : vetTag) {
-                if (keepTag.searchTagByName(vetTag1.trim(), user) == null) {
-                    System.out.println("APOSTO 50 CENTAVOS QUE O ERRO TA AQ");
-                } else {
-                    Tag tagOfUser = new Tag();
-
-                    tagOfUser.setSeqTag(keepTag.searchTagByName(vetTag1.trim(), user));
-                    tagOfUser.setTagName(vetTag1.trim());
-                    tagOfUser.setUser(user);
-
-                    tagItem.add(tagOfUser);
-                }
-            }
-        }*/
-
         // Instanciando item para inserir
         Item item = new Item();
 
@@ -103,73 +76,6 @@ public class CreateItem implements GenericProcess {
         String success = GsonUtil.toJson(result);
         
         return success;
-
-/*        if (!result) {
-        } else {
-
-            if (!tag.isEmpty()) {
-                // busca a pk de item já que ela é uma seq e necessária para
-                // inserir as tags relacionadas ao item em itemtag
-                Item itemWithId = keepItem.searchItemByName(name);
-
-                if (itemWithId == null) {
-
-                } else {
-
-                    // Adicionando os dados do item e tag a tabela itemtag
-                    ItemTag itemTag = new ItemTag();
-
-                    itemTag.setItem(itemWithId);
-
-                    // inserindo o array list de tag aqui
-                    itemTag.setListTags(tagItem);
-
-                    // enfim adicionando as tags do item
-                    // Lembrar de fazer o Proxy
-                    IKeepItemTag keepItemTag = new KeepItemTag();
-                    result = keepItemTag.createTagInItem(itemTag);
-
-                    if (!result) {
-                    } else {
-                        itemList = keepItem.listAllItem(user);
-                        if (itemList == null) {
-                            req.setAttribute("itemList", new ArrayList());
-                        } else {
-                            req.setAttribute("itemList", itemList);
-                        }
-
-                        IKeepTag keepTag = new KeepTag();
-                        List<Tag> tagList = keepTag.listAlltag(user);
-                        if (tagList == null) {
-                            req.setAttribute("tagList", new ArrayList());
-                        } else {
-                            req.setAttribute("tagList", tagList);
-                        }
-
-                        pageJSP = "/index.jsp";
-                    }
-                }
-            } else {
-                itemList = keepItem.listAllItem(user);
-
-                if (itemList == null) {
-                    req.setAttribute("itemList", new ArrayList());
-                } else {
-                    req.setAttribute("itemList", itemList);
-                }
-
-                IKeepTag keepTag = new KeepTag();
-                List<Tag> tagList = keepTag.listAlltag(user);
-                if (tagList == null) {
-                    req.getSession().setAttribute("tagList", new ArrayList());
-                } else {
-                    req.getSession().setAttribute("tagList", tagList);
-                }
-
-                pageJSP = "/index.jsp";
-            }
-
-        }*/
 
         }
 }
