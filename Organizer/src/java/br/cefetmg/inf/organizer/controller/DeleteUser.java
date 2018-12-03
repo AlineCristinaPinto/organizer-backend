@@ -19,25 +19,16 @@ public class DeleteUser implements GenericProcess {
         IKeepUser keepUser = new KeepUser();
         
         String email =null;
-        String password = null;
-        
+
         Map<String,Object> parameterMap = (Map<String,Object>) req.getAttribute("mobile-parameters");
         email = (String) parameterMap.get("email");
-        password = (String) PasswordCriptography.generateMd5((String) parameterMap.get("password"));
 
-        User newUser = new User();
+        User user = new User();
+        user.setCodEmail(email);
+
+        boolean success = keepUser.deleteAccount(user);
+        result = GsonUtil.toJson(success);
         
-        newUser.setCodEmail(email);
-        User user = keepUser.searchUser(newUser);
-
-        if (!(password.equals(user.getUserPassword()))) {
-            result = GsonUtil.toJson(false);
-        } else {
-     
-            boolean success = keepUser.deleteAccount(user);
-            result = GsonUtil.toJson(success);
-        }
-
         return result;
     }
 
